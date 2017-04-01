@@ -37,7 +37,7 @@ class Validator(object):
     def create_validator(spec):
         _type = get_entry_type(spec)
         if _type is ITERABLE:
-            return IterableSchemeValidator(spec)
+            return IterableValidator(spec)
         elif _type is VALIDATOR:
             return spec
         elif _type is DICT:
@@ -135,18 +135,19 @@ class Any(Validator):
                 return value
             except Exception:
                 pass
-        raise ValueError("value did not pass any validation")
+        raise ValueError("value did not pass 'Any' validation")
 
 
-class IterableSchemeValidator(Validator):
+class IterableValidator(Validator):
 
     def __init__(self, iterable, ignore_type=False):
-        self.__iterable = iterable
+        TypeValidator(collections.Iterable).validate(iterable)
         self.__type = object
         if not ignore_type:
             self.__type = type(iterable)
-        if not isinstance(iterable, collections.Iterable):
-            raise TypeError("'iterable' must be an iterable")
+        self.__iterable = []
+        for itm in iterable:
+            self.__iterable.append(Validator.create_validator(itm))
 
     def validate(self, value):
         validated = []
@@ -155,10 +156,8 @@ class IterableSchemeValidator(Validator):
         for i in range(len(self.__iterable)):
             item = self.__iterable[i]
             try:
-                if type(item) is type:
-                    validated_value = TypeValidator(item).validate(value[i])
-                else:
-                    validated_value = ValueValidator(item).validate(value[i])
+                validated_value = item.validate(value[i])
+                validated.append(validated_value)
             except Exception as ex:
                 raise type(ex)("element at index {} ({})".format(i, ex))
             validated.append(validated_value)
@@ -168,8 +167,8 @@ class IterableSchemeValidator(Validator):
 class Optional(Validator):
     """Optional Scheme."""
 
-    def __init__(self, _type, default):
-        self.__scheme = TypeValidator(_type)
+    def __init__(self, scheme, default):
+        self.__scheme = Validator.create_validator(scheme)
         self.default = default
 
     def validate(self, *value):
