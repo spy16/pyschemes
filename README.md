@@ -1,6 +1,10 @@
 # PySchemes
 PySchemes is a library for validating data structures in Python. PySchemes is desinged to be simple and Pythonic.
 
+.. image:: https://secure.travis-ci.org/shivylp/pyschemes.png?branch=master
+    :target: https://travis-ci.org/shivylp/pyschemes
+
+
 ## Features
 * Simple representation of schema using primitive Python types (Or Complex types as well)
 * Sane Schema Structures
