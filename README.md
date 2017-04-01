@@ -1,6 +1,11 @@
 # PySchemes
 PySchemes is a library for validating data structures in Python. PySchemes is desinged to be simple and Pythonic.
 
+## Features
+* Simple representation of schema using primitive Python types (Or Complex types as well)
+* Sane Schema Structures
+* Sane errors
+
 ## Examples
 
 ```python
@@ -116,4 +121,67 @@ ValueError: missing key 'required-key'
 Traceback (most recent call last):
   File "<stdin>", line 1, in <module>
 TypeError: at key 'k' (expected type: 'int', got 'str')
+
+>>> Scheme({"only-key": str}).validate({"only-key": "hello", "b": "not-allowed"})
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: at key 'b' (not allowed)
 ```
+
+
+6. Lambda/Callable Scheme
+```python
+>>> Scheme(lambda x: x < 100).validate(10)
+10
+
+>>> Scheme(lambda x: x < 100).validate(101)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: validator '<lambda>' failed for value '101'
+
+>>> def CustomValidator(value):
+...    if value == "foo" or value in range(100):
+...       return value
+...    else:
+...       return False
+...
+>>> Scheme(CustomValidator).validate(101)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: validator 'CustomValidator' failed for value '10'
+
+>>> Scheme(CustomValidator).validate(9)
+9
+>>> Scheme(CustomValidator).validate("foo")
+'foo'
+```
+
+
+7. Compund Schemes
+```python
+>>> Scheme({"test": lambda x: x < 100}).validate({"test": 10})
+{'test': 10}
+
+>>> Scheme({"test": lambda x: x < 100}).validate({"test": 101})
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: at key 'test' (validator '<lambda>' failed for value '101')
+
+>>> Scheme({"test": Scheme({"a": str, "b": int})}).validate({"test": {}})
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ValueError: at key 'test' (missing key 'a')
+
+>>> Scheme({"test": Scheme({"b": int})}).validate({"test": {"b": 1.5}})
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: at key 'test' (at key 'b' (expected type: 'int', got 'float'))
+
+>>> Scheme({"t": {str: int}}).validate({"t": {"a": 1}})
+{'t': {'a': 1}}
+
+>>> Scheme({"t": (str, int)}).validate({"t": ("a", 1)})
+{'t': ('a', 1)}
+```
+
+And more to come in tests!
