@@ -160,9 +160,24 @@ class IterableSchemeValidator(Validator):
                 else:
                     validated_value = ValueValidator(item).validate(value[i])
             except Exception as ex:
-                raise ValueError("element #{} ({})".format(i, ex))
+                raise type(ex)("element at index {} ({})".format(i, ex))
             validated.append(validated_value)
         return type(value)(validated)  # return value of sample type
+
+
+class Optional(Validator):
+    """Optional Scheme."""
+
+    def __init__(self, _type, default):
+        self.__scheme = TypeValidator(_type)
+        self.default = default
+
+    def validate(self, *value):
+        if len(value) > 0:
+            val = value[0]
+            return self.__scheme.validate(val)
+        return self.default
+
 
 
 class MappingValidator(Validator):
@@ -187,9 +202,18 @@ class MappingValidator(Validator):
                             raise ValueError("not allowed")
                     else:
                         validator = Validator.create_validator(type_rule)
-                        validator.validate(v)
+                validator.validate(v)
             except Exception as ex:
                 raise type(ex)("at key '{}' ({})".format(
                     k, ex
                 ))
+        for k in self.__mapping:
+            _type = get_entry_type(k)
+            if _type is COMPARABLE:
+                if k not in value:
+                    expected = self.__mapping.get(k, None)
+                    if isinstance(expected, Optional):
+                        value[k] = expected.default
+                    else:
+                        raise ValueError("missing key '{}'".format(k))
         return value

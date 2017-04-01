@@ -1,8 +1,8 @@
 """Schemer is a Schema Validation package for Python."""
 
 
-from .base import Schema
+from .base import Scheme
 
 
 
-__all__ = ["Schema"]
+__all__ = ["Scheme"]
