@@ -1,4 +1,5 @@
 import abc
+import re
 import collections
 
 
@@ -216,3 +217,18 @@ class MappingValidator(Validator):
                     else:
                         raise ValueError("missing key '{}'".format(k))
         return value
+
+
+class RegexValidator(object):
+
+    def __init__(self, pattern):
+        self.pattern = re.compile(pattern)
+
+    def validate(self, value):
+        TypeValidator(str).validate(value)
+        if self.pattern.match(value):
+            return value
+        else:
+            raise ValueError("value '{}' did not match regex r'{}'".format(
+                value, str(self.pattern)
+            ))

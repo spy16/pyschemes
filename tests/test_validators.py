@@ -7,6 +7,7 @@ from types import FunctionType
 from pyschemes.validators import TypeValidator, LengthValidator, ValueValidator
 from pyschemes.validators import CallableValidator, All, Any, Optional
 from pyschemes.validators import IterableValidator, MappingValidator
+from pyschemes.validators import IterableValidator, RegexValidator
 
 
 def test_type_validator():
@@ -104,3 +105,19 @@ def test_mapping_validator():
             "name": "bob",
             "phone": 1234567890
         })
+    with pytest.raises(ValueError):
+        MappingValidator(map_scheme).validate({
+            "name": "bob",
+            "phone": 1234567890,
+            "balh-not-allowed": "hello"
+        })
+
+
+
+def test_regex_validator():
+    pattern = r"\w+\d+\w+"  # e.g. hello4world
+    RegexValidator(pattern).validate("hello4world")
+    with pytest.raises(ValueError):
+        RegexValidator(pattern).validate("helloworld")
+    with pytest.raises(TypeError):
+        RegexValidator(pattern).validate([1,2,3])
