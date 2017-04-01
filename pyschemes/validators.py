@@ -179,8 +179,8 @@ class Optional(Validator):
         return self.default
 
 
-
 class MappingValidator(Validator):
+    """Validator for dicts and key-value maps."""
 
     def __init__(self, mapping, ignore_unknown=False):
         TypeValidator(collections.Mapping).validate(mapping)
@@ -220,6 +220,7 @@ class MappingValidator(Validator):
 
 
 class RegexValidator(object):
+    """Validator for regex patterns."""
 
     def __init__(self, pattern):
         self.pattern = re.compile(pattern)

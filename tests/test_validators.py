@@ -108,7 +108,7 @@ def test_mapping_validator():
     with pytest.raises(ValueError):
         MappingValidator(map_scheme).validate({
             "name": "bob",
-            "phone": 1234567890,
+            "phone": "1234567890",
             "balh-not-allowed": "hello"
         })
 
