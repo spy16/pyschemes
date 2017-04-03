@@ -158,7 +158,6 @@ class IterableValidator(Validator):
             item = self.__iterable[i]
             try:
                 validated_value = item.validate(value[i])
-                validated.append(validated_value)
             except Exception as ex:
                 raise type(ex)("element at index {} ({})".format(i, ex))
             validated.append(validated_value)
