@@ -26,10 +26,6 @@ setup(
     author='Shivaprasad',
     author_email='shiv.ylp@gmail.com',
     license='MIT',
-    classifiers=[
-        'Development Status :: 3 - Beta',
-        'Intended Audience :: Developers',
-    ],
     keywords='validator schema',
     packages=find_packages(exclude=['tests']),
     install_requires=[]
