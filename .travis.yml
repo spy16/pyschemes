@@ -1,19 +1,17 @@
-# use new container-based infrastructure
-sudo: false
-
 language: python
-
-cache:
-  pip: true
-  directories:
-    - .tox
-
-install: pip install tox
-
-env:
-  - TOX_ENV=py2
-  - TOX_ENV=py3
-  - TOX_ENV=pypy
-
-script:
-  - tox -e $TOX_ENV
+python:
+  - "2.6"
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  # PyPy versions
+  - "pypy"  # PyPy2 2.5.0
+  - "pypy3" # Pypy3 2.4.0
+  - "pypy-5.3.1"
+# command to install dependencies
+install:
+  - pip install .
+  - pip install -r requirements.txt
+# command to run tests
+script: pytest
