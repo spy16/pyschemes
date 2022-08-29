@@ -2,7 +2,7 @@
 
 
 import pytest
-from collections import Mapping, Iterable
+from collections.abc import Mapping, Iterable
 from types import FunctionType
 from pyschemes.validators import TypeValidator, LengthValidator, ValueValidator
 from pyschemes.validators import CallableValidator, All, Any, Optional
