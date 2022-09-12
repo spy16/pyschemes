@@ -1,6 +1,6 @@
 import abc
 import re
-import collections
+import collections.abc
 
 
 COMPARABLE, CALLABLE, VALIDATOR, TYPE, DICT, ITERABLE = range(6)
@@ -109,7 +109,7 @@ class All(Validator):
     """Check that all validators pass."""
 
     def __init__(self, schemes):
-        TypeValidator(collections.Iterable).validate(schemes)
+        TypeValidator(collections.abc.Iterable).validate(schemes)
         self.__schemes = []
         for scheme in schemes:
             self.__schemes.append(Validator.create_validator(scheme))
@@ -124,7 +124,7 @@ class Any(Validator):
     """Check if any value is valid as per any one scheme"""
 
     def __init__(self, schemes):
-        TypeValidator(collections.Iterable).validate(schemes)
+        TypeValidator(collections.abc.Iterable).validate(schemes)
         self.__schemes = []
         for scheme in schemes:
             self.__schemes.append(Validator.create_validator(scheme))
@@ -142,7 +142,7 @@ class Any(Validator):
 class IterableValidator(Validator):
 
     def __init__(self, iterable, ignore_type=False):
-        TypeValidator(collections.Iterable).validate(iterable)
+        TypeValidator(collections.abc.Iterable).validate(iterable)
         self.__type = object
         if not ignore_type:
             self.__type = type(iterable)
@@ -182,12 +182,12 @@ class MappingValidator(Validator):
     """Validator for dicts and key-value maps."""
 
     def __init__(self, mapping, ignore_unknown=False):
-        TypeValidator(collections.Mapping).validate(mapping)
+        TypeValidator(collections.abc.Mapping).validate(mapping)
         self.__mapping = dict(mapping)
         self.ignore_unknown = ignore_unknown
 
     def validate(self, value):
-        TypeValidator(collections.Mapping).validate(value)
+        TypeValidator(collections.abc.Mapping).validate(value)
         for k, v in value.items():
             try:
                 key_type = type(k)
